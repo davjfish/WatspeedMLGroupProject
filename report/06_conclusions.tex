@@ -2,11 +2,37 @@
 
 \subsection{Was the model useful?}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
-
+In a laboratory setting, agers are tasked with assessing the ages of biological specimens with nothing but the image of that specimen's otolith.
+This is by design.
+The reason is we want to make sure that their assessments are unbiased by biological information about the fish (e.g., length, weight, etc.).
+Since there is a direct 1:1 relationship between annuli and fish age, this is really the best and truest form of age determination.
+It is not surprising that the models that contained the metadata performed much better than those that did not.
+There is a strong and well-documented relationship between age and fish size.
+That being said, this relation will vary across time and space.
+There are many factors that can influence the size-at-age of a fish population, chief among them are habitat quality and predation.
+Accordingly, a truly useful model should play by the same rules as human agers, i.e., be based solely on the image of the otolith.
+In other words, these models need to be able to decode the age from an otolith image, just as a human does.
+While we took steps in the right direction with our project, we did not produce a model that would have any value in a production context.
 
 \subsection{What did you learn about your data set?}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+The lesson that stood out the most is that working with images can be quite challenging both from a model complexity point of view but also from a logistic point of view.
+The datasets get large very fast and require large computing capacity.
+There were a lot of questions and experimental approaches that were simply not explored due to practical limitations.
+We also noted that the convolutional neutral networks (CNNs) displayed a much higher capacity for capturing the complexity of the data when compared to the other types of models tested.
+However, more work is needed for determining how CNN models can be fine-tuned to determine age from otolith images.
+It is only at this point where the deployment of these models in a production setting can be realistically considered.
+Furthermore, an in-depth exploration of the strengths and weaknesses of these models will need to be well understood.
+For example, under which circumstances are these models likely to succeed or fail?
+Are the ages of certain species more difficult to decode than others?
+
+\subsection{What would you do next to improve your model?}
+
+For future analyses, we plan to explore tools designed for efficiently handling large datasets through distributed computing.
+Instead of relying on a local setup like Jupyter Notebooks, we could leverage platforms that support scalable computation across multiple servers.
+This would enable parallel processing, significantly improving the speed of data analysis and model training.
+As a result, we could minimize the need to downsize images, preserving model accuracy without excessive computational time.
+Additionally, this would provide more flexibility to experiment with different models and algorithms, leading to better and more optimized solutions.
+Furthermore, implementing ensemble methods could further enhance accuracy, and incorporating cross-validation would help ensure better generalization and consistency across different data subsets, ultimately improving the model's ability to predict fish age accurately.
 
 

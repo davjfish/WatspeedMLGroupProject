@@ -46,17 +46,29 @@ Finally, the results of the CNN test and validation set are displayed in Table~\
 The CNN model achieved an R\textsuperscript{2} of 0.73 on the test set, which is a promising result given the complexity of the task.
 The model demonstrated a MSE of 2.64 and RMSE of 1.62, indicating room for improvement, but also showing that it performs better than simple models based solely on metadata.
 The model showed better performance on the test set compared to the validation set, where the R\textsuperscript{2} dropped to 0.55.
+A graph of the actual verse predicted ages of otolith images are displayed in Figure~\ref{fig:actual_vs_predicted}.
 Further tuning of the model, such as experimenting with more complex architectures or adjusting hyperparameters, may improve performance on both the validation and test sets.
 
+\pagebreak
 
+\begin{figure}
+    \includegraphics[width=\linewidth]{predict_vs_actual}
+    \caption{Actual verses CNN predicted ages of otolith images}
+    \label{fig:actual_vs_predicted}
+\end{figure}
+
+
+
+\pagebreak
 \begin{longtable}{| p{.25\textwidth} | p{.25\textwidth} | p{.25\textwidth} | p{.25\textwidth} |}
     \caption{Performance summary of model built on metadata}
     \label{tab:simple_models} \\
     \hline
-    Model &
-    Mean Squared Error \newline(MSE) &
-    Root Mean Squared Error \newline (RMSE) &
-    R-squared (R\textsuperscript{2}) \\
+    \textbf{Model} &
+    \textbf{Mean Squared Error \newline(MSE)} &
+    \textbf{Root Mean Squared Error \newline (RMSE)} &
+    \textbf{R-squared (R\textsuperscript{2})} \\
+    \hline
     \hline
     SVR &
     1.984 &
@@ -100,61 +112,80 @@ Further tuning of the model, such as experimenting with more complex architectur
     \hline
 \end{longtable}
 
+\pagebreak
 \begin{longtable}{| p{.25\textwidth} | p{.25\textwidth} | p{.25\textwidth} | p{.25\textwidth} |}
     \caption{Performance summary of model built on integrated metadata and image data}
     \label{tab:pca_models} \\
     \hline
-    Model &
-    Mean Squared Error \newline(MSE) &
-    Root Mean Squared Error \newline (RMSE) &
-    R-squared (R\textsuperscript{2}) \\
+    \textbf{Model} &
+    \textbf{Mean Squared Error \newline(MSE)} &
+    \textbf{Root Mean Squared Error \newline (RMSE)} &
+    \textbf{R-squared (R\textsuperscript{2})} \\
     \hline
-    SVR
-    1.774683
-    1.332172
-    0.805435
     \hline
-    ElasticNet
-    1.858366
-    1.363219
-    0.796261
+    SVR &
+    1.774 & 683
+    1.33217 & 2
+    0.805435 \\
     \hline
-    Decision Tree
-    1.766926
-    1.329258
-    0.806286
+    ElasticNet &
+    1.858366 &
+    1.363219 &
+    0.796261 \\
     \hline
-    Random Forest
-    1.558563
-    1.248424
-    0.829129
+    Decision Tree &
+    1.766926 &
+    1.329258 &
+    0.806286 \\
     \hline
-    XGBoost
-    1.587466
-    1.259947
-    0.825961
+    Random Forest &
+    1.558563 &
+    1.248424 &
+    0.829129 \\
     \hline
-    Voting
-    1.547636
-    1.24404
-    0.830327
+    XGBoost &
+    1.587466 &
+    1.259947 &
+    0.825961 \\
     \hline
-    Stacking \newline(Linear regression)
-    1.514197
-    1.230527
-    0.833993
+    Voting &
+    1.547636 &
+    1.24404 &
+    0.830327 \\
     \hline
-    Stacking \newline(Gradient boost)
-    1.614702
-    1.270709
-    0.822975
+    Stacking \newline(Linear regression) &
+    1.514197 &
+    1.230527 &
+    0.833993 \\
+    \hline
+    Stacking \newline(Gradient boost) &
+    1.614702 &
+    1.270709 &
+    0.822975 \\
     \hline
 \end{longtable}
 
 
-
-
-
-
-
+\pagebreak
+\begin{longtable}{| p{.25\textwidth} | p{.25\textwidth} | p{.25\textwidth} | p{.25\textwidth} |}
+    \caption{Performance summary of model built on integrated metadata and image data}
+    \label{tab:cnn_models} \\
+    \hline
+    \textbf{Dataset type} &
+    \textbf{Mean Squared Error \newline(MSE)} &
+    \textbf{Root Mean Squared Error \newline (RMSE)} &
+    \textbf{R-squared (R\textsuperscript{2})} \\
+    \hline
+    \hline
+    Test &
+    2.64 &
+    1.62 &
+    0.73 \\
+    \hline
+    Validation &
+    2.13 &
+    1.46 &
+    0.55 \\
+    \hline
+\end{longtable}
 
