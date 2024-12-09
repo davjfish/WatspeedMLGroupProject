@@ -27,3 +27,55 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dol
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
 
+
+
+\usepackage{array}
+
+\begin{center}
+\begin{tabular}{| m{2cm} | m{2cm}| m{2cm} | m{2cm} |}
+Name & Type & Description & Purpose                                                                                                                                                     &  \\
+ \hline
+ \hline
+uuid & String (or unique identifier) & A unique identifier for each data record. This is useful for tracking and referencing individual fish samples in the dataset. & Helps ensure each record is uniquely identifiable. It would not be used directly in the model for predictions, but it's essential for managing the dataset. &  \\
+ \hline
+fish\_id & String & A unique identifier for each individual fish. & individual fish records. It might be useful for aggregation or analysis purposes but would generally not be used in the model itself. &   \\
+ \hline
+\end{tabular}
+\end{center}
+
+ age
+ Integer
+ The known age of the fish, which will be used as the target variable for the model.
+ The primary target variable to predict based on the otolith image features. The model will learn to predict this based on otolith image analysis and possibly other features.
+ length
+ Float
+ The length of the fish, which is often correlated with age and could be useful as a feature for the model.
+ Features like length and weight can help the model better estimate the age since they provide additional biological context for each fish.
+ weight
+ Float
+ The weight of the fish, which, like length, may correlate with age.
+ Another potentially important feature for age estimation, as larger or heavier fish may be older.
+ month
+ Integer
+ the specimen was collected (from the wild) normalized to 1
+ A potential feature for the model to understand seasonal variations in growth or age estimation.
+ is_male
+ Boolean (0 or 1)
+ A binary value indicating whether the fish is male (1) or not (0).
+ Gender could influence growth rates and age estimation, so this feature might improve model accuracy.
+ is_female
+ Boolean (0 or 1)
+ A binary value indicating whether the fish is female (1) or not (0).
+ Like is_male, gender could affect age estimation, especially in species where males and females have different growth patterns.
+ is_unknown
+ Boolean (0 or 1)
+ A binary value indicating unknown (1) or known (0).
+ Gender information is unavailable for these instances.
+ is_plaice
+ Boolean (0 or 1)
+ A binary value indicating whether the fish is an American plaice (1) or not (0).
+ Species-specific characteristics could influence the model, as growth patterns may differ between species. This feature will help the model differentiate between the two species.
+ is_herring
+ Boolean (0 or 1)
+ A binary value indicating whether the fish is an Atlantic herring (1) or not (0).
+ Similar to is_plaice, this feature will help the model differentiate between the two species (American plaice and Atlantic herring), as their growth rates, lifespan, and annuli in otoliths may differ.
