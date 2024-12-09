@@ -1,13 +1,32 @@
 \section{Analysis}
 
-\subsection{Our Analysis...}
+\subsection{Methodology}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+First, we aimed to build a simple predictive model that integrates the image data with the metadata measurements, with the goal of outperforming the metadata alone.
+Comparison of SVM regressor (SVR), Elastic Net, Decision Tree, Random Forest, XGBoost, Voting, and Stacking (combining SVR, ElasticNet, Decision Tree, Random Forest, and XGBoost with the secondary model as indicated in the tables below) models were performed on the datasets.
+A randomized grid search was performed separately for each model to determine the optimal hyperparameters before comparing the models.
+Metrics such as Mean Squared Error (MSE), Root Mean Squared Error (RMSE), R-squared (R\textsuperscript{2}) were used as key evaluators.
 
-\subsubsection{Methodology}
+Next, we built models on the integrated metadata and image data aiming for better performance but applying a PCA transformation on the image data, preserving 95\% of the variance.
+As a result, the dimensionality of the image data was reduced from 4,096 pixels to 340 dimensions
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+Finally, we explored a Convolutional Neural Network (CNN) model to further enhance our predictive performance.
+The CNN model is designed to automatically learn relevant features from the otolith images, which is particularly useful in identifying the age-related annuli in the images.
+The CNN architecture used in this analysis consists of several convolutional and pooling layers, followed by fully connected layers that allow for regression of the fish age.
+
+\subsubsection{CNN Model Architecture}
+
+The CNN architecture used in this analysis includes:
+
+\begin{itemize}
+    \item \textbf{Convolutional Layers:} These layers apply filters to extract features from the images. We started with 32 filters in the initial layers, progressively increasing to 128 filters in the deeper layers.
+    \item \textbf{Max-Pooling Layers:} These layers downsample the feature maps, reducing the computational load and aiding in generalization.
+    \item \textbf{Flatten and Dense Layers:} The feature maps are flattened and passed through fully connected layers to predict the fish age.
+    \item \textbf{Dropout Layer:} A dropout layer was incorporated to mitigate overfitting during training by randomly disabling a fraction of neurons.
+\end{itemize}
+
+The model was trained using the Adam optimizer and Mean Squared Error (MSE) as the loss function.
+We evaluated the model's performance using key metrics such as Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared (R\textsuperscript{2}) on both the validation and test datasets.
 
 \subsubsection{Results}
 
