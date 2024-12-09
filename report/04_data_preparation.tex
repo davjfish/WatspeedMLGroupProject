@@ -2,80 +2,159 @@
 
 \subsection{What was your data source?}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
-Ecosystem Survey ~\cite{groundfish}
 
-\subsection{How good was the data quality?}
+The data used for this analysis originate from archives of images taken of otoliths from two Atlantic Canadian species of fish: Atlantic Herring and American Plaice.
+While these archives are unpublished, some of the details about how the otoliths were collected, preserved and imaged are available on the Government of Canada's Open Data Portal ~\cite{ogp_plaice}.
+The fish specimens themselves were collected from various Canadian government stock assessment surveys (e.g., ~\cite{groundfish} and ~\cite{ns_strait}) as well as from commercial port sampling programs.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+\subsection{Data quality and procurement?}
 
-\subsection{What did you need to do to procure it?}
+The quality of the data was very high.
+All the specimens had unique universal identifiers (UUIDs) which corresponded to the image file names.
+None of the images used were orphaned, i.e., without corresponding metadata.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+The dataset contained ages that were evaluated by human experts and which are actively used in annual population models for the two species in question.
+Furthermore, since each fish specimen has two otoliths, our target dataset was effectively doubled since for every fish whose age is known, there were two corresponding images.
+
+The data was procured by a team member who has a role at Fisheries and Oceans Canada in maintaining and archiving the dataset.
+
 \subsection{What tools or code did you need to use to prepare it for analysis?}
+
+Here is a list of the python tools used for processing, data preparation and model construction:
+
+\begin{itemize}
+    \item Jupyter Notebooks: for the development and presentations of our analysis
+    \item OpenCV: for image processing and manipulation.
+    \item CNN (TensorFlow / Keras): for deep learning and automatic feature extraction from images.
+    \item XGBoost: for gradient-boosting regression modeling.
+    \item Scikit-learn: for machine learning models, data preprocessing, and evaluation
+    \item Pandas: for handling and manipulating tabular data
+    \item Matplotlib / Seaborn: for visualizing data and model performance.
+\end{itemize}
 
 \subsubsection{Fish Specimen Data}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+Information about the fish specimen was stored in a CSV file which contained metadata for each otolith, including the UUID, age, length, weight, and other categorical features such as gender and species.
+The categorical variables were already converted into dummy variables.
+For example, at the time of collection, a specimen's sex is identified as either `male`, `female` or `unknown`.
+In the dataset, these categories were represented by three mutually exclusive columns: `is\_male`, `is\_female` and `is\_unknown`.
+The species were represented by two mutually exclusive columns: `is\_plaice` and `is\_herring`.
+As noted above, the metadata is linked to the corresponding otolith image based on the UUID\@.
+The CSV file was simply read into a pandas dataframe.
+In Table \ref{tab:features} a detailed explanation of each column in the dataset is provided.
 
 \subsubsection{Otolith Images}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
-
+The dataset contained a total of 15,089 images of otoliths originating from the 7828 specimens.
+Therefore, on average, each specimen had 1.9 corresponding otoliths.
+The otolith image was identified by a UUID prefix in its filename.
+The original resolution of the images were 1000 x 1000 pixels and were in RGB.
+To make the image processing more manageable for this project, they were resized to 64 x 64 pixels and to a greyscale image.
+The image was subsequently flattened from a 1D array to a 2D array.
+Similarly, for the purposes of shortening the processing time of the scripts, only one randomly selected image from each specimen was used in the analysis.
+Finally, the images were read into a 7,828 x 4097 pandas dataframe, where the rows were the image instances and the columns were the pixels plus one extra one for the UUID which was parsed from the filename.
+This was then merged with the metadata dataframe referenced above using a left join on the `uuid` column.
+After the images and metadata were merged, the numerical features of the resulting matrix were normalized.
+Specifically, we used the StandardScaler to normalize the numerical features (e.g, length, weight and pixel columns) meaning those columns will have zero mean and unit variance.
+This step is crucial for machine learning models to perform optimally.
+Finally, the dataset was split into training and testing portions using the `train\_test\_split` according to a ratio of 4:1, respectively.
+This resulted in 6262 instances for model training and the remaining 1566 instances for model testing.
 
 \subsection{What challenges did you face?}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, accusantium cum dolor eveniet facere impedit laborum non recusandae sit velit. Doloribus ducimus est exercitationem libero maxime nostrum omnis quos temporibus.
+One of the main significant challenges encountered during this analysis was the large size of the dataset.
+With over 15,000 images totaling nearly 4 GB, managing and processing the data was difficult.
+The sheer volume of data made it difficult to disseminate and significantly slowed down the model training process, making it clear that resizing the images was necessary.
+As a result, we had to resize the images to very small sizes to achieve reasonable computation times.
+However, smaller images likely led to the loss of important details, which could potentially decrease accuracy.
+Another challenge involved managing multiple images per UUID.
+Since each specimen typically had more than one image, it was necessary to determine the most effective method for utilizing them.
+
+\\~\\
+Three approaches were explored:
+\\~\\
+
+
+\begin{enumerate}
+    \item \textbf{Random Selection:} Selecting a single image at random per UUID.
+    \item \textbf{Image Concatenation:} Merging multiple images into a single, larger input.
+    \item \textbf{Image Averaging:} Averaging the images to generate a single representative image.
+\end{enumerate}
+
+Each approach presented its own limitations.
+Random selection could overlook valuable information, concatenation introduced additional complexity, and averaging risked the loss of critical features.
+Balancing accuracy with efficiency in choosing the optimal method proved to be a time-consuming and challenging task.
 
 
 
-\usepackage{array}
+\begin{longtable}{| p{.15\textwidth} | p{.15\textwidth} | p{.30\textwidth} | p{.30\textwidth} |}
+    \caption{Detailed explanation of the column in the specimen metadata dataset}
+    \label{tab:features} \\
+    \hline
+    Name &
+    Type &
+    Description &
+    Purpose \\
+    \hline
+    \hline
+    uuid &
+    String (or unique identifier) & A unique identifier for each data record.
+    This is useful for tracking and referencing individual fish samples in the dataset. &
+    Helps ensure each record is uniquely identifiable.
+    It would not be used directly in the model for predictions, but it's essential for managing the dataset.  \\
+    \hline
+    fish\_id &
+    String &
+    A unique identifier for each individual fish. &
+    Individual fish records.
+    It might be useful for aggregation or analysis purposes but would generally not be used in the model itself. \\
+    \hline
+    age &
+    Integer & The known age of the fish, which will be used as the target variable for the model. &
+    The primary target variable to predict based on the otolith image features.
+    The model will learn to predict this based on otolith image analysis and possibly other features. \\
+    \hline
+    length &
+    Float &
+    The length of the fish, which is often correlated with age and could be useful as a feature for the model. &
+    Features like length and weight can help the model better estimate the age since they provide additional biological context for each fish. \\
+    \hline
+    weight &
+    Float &
+    The weight of the fish, which, like length, may correlate with age. &
+    Another potentially important feature for age estimation, as larger or heavier fish may be older. \\
+    \hline
+    month &
+    Integer &
+    the specimen was collected (from the wild) normalized to 1 &
+    A potential feature for the model to understand seasonal variations in growth or age estimation. \\
+    \hline
+    is\_male &
+    Boolean (0 or 1) &
+    A binary value indicating whether the fish is male (1) or not (0). &
+    Gender could influence growth rates and age estimation, so this feature might improve model accuracy. \\
+    \hline
+    is\_female &
+    Boolean (0 or 1) &
+    A binary value indicating whether the fish is female (1) or not (0). &
+    Like is\_male, gender could affect age estimation, especially in species where males and females have different growth patterns. \\
+    \hline
+    is\_unknown &
+    Boolean (0 or 1) &
+    A binary value indicating unknown (1) or known (0). &
+    Gender information is unavailable for these instances. \\
+    \hline
+    is\_plaice &
+    Boolean (0 or 1) &
+    A binary value indicating whether the fish is an American plaice (1) or not (0). &
+    Species-specific characteristics could influence the model, as growth patterns may differ between species.
+    This feature will help the model differentiate between the two species. \\
+    \hline
+    is\_herring &
+    Boolean (0 or 1) &
+    A binary value indicating whether the fish is an Atlantic herring (1) or not (0). &
+    Similar to is\_plaice, this feature will help the model differentiate between the two species (American plaice and Atlantic herring), as their growth rates, lifespan, and annuli in otoliths may differ. \\
+    \hline
 
-\begin{center}
-\begin{tabular}{| m{2cm} | m{2cm}| m{2cm} | m{2cm} |}
-Name & Type & Description & Purpose                                                                                                                                                     &  \\
- \hline
- \hline
-uuid & String (or unique identifier) & A unique identifier for each data record. This is useful for tracking and referencing individual fish samples in the dataset. & Helps ensure each record is uniquely identifiable. It would not be used directly in the model for predictions, but it's essential for managing the dataset. &  \\
- \hline
-fish\_id & String & A unique identifier for each individual fish. & individual fish records. It might be useful for aggregation or analysis purposes but would generally not be used in the model itself. &   \\
- \hline
-\end{tabular}
-\end{center}
 
- age
- Integer
- The known age of the fish, which will be used as the target variable for the model.
- The primary target variable to predict based on the otolith image features. The model will learn to predict this based on otolith image analysis and possibly other features.
- length
- Float
- The length of the fish, which is often correlated with age and could be useful as a feature for the model.
- Features like length and weight can help the model better estimate the age since they provide additional biological context for each fish.
- weight
- Float
- The weight of the fish, which, like length, may correlate with age.
- Another potentially important feature for age estimation, as larger or heavier fish may be older.
- month
- Integer
- the specimen was collected (from the wild) normalized to 1
- A potential feature for the model to understand seasonal variations in growth or age estimation.
- is_male
- Boolean (0 or 1)
- A binary value indicating whether the fish is male (1) or not (0).
- Gender could influence growth rates and age estimation, so this feature might improve model accuracy.
- is_female
- Boolean (0 or 1)
- A binary value indicating whether the fish is female (1) or not (0).
- Like is_male, gender could affect age estimation, especially in species where males and females have different growth patterns.
- is_unknown
- Boolean (0 or 1)
- A binary value indicating unknown (1) or known (0).
- Gender information is unavailable for these instances.
- is_plaice
- Boolean (0 or 1)
- A binary value indicating whether the fish is an American plaice (1) or not (0).
- Species-specific characteristics could influence the model, as growth patterns may differ between species. This feature will help the model differentiate between the two species.
- is_herring
- Boolean (0 or 1)
- A binary value indicating whether the fish is an Atlantic herring (1) or not (0).
- Similar to is_plaice, this feature will help the model differentiate between the two species (American plaice and Atlantic herring), as their growth rates, lifespan, and annuli in otoliths may differ.
+\end{longtable}
